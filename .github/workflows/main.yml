@@ -1,4 +1,4 @@
-name: Simple Daily Geosite Sync
+name: Daily Geosite Sync
 
 on:
   # 每天UTC时间00:00运行 (北京时间08:00)
@@ -8,29 +8,56 @@ on:
   # 允许手动触发
   workflow_dispatch:
 
+# 配置权限 - 解决403权限错误
+permissions:
+  contents: write
+  actions: read
+
 jobs:
   sync:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout
+    - name: 🚀 Checkout
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
       
-    - name: Setup Python
+    - name: 🐍 Setup Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
         
-    - name: Install dependencies
+    - name: 📦 Install dependencies
       run: pip install requests
         
-    - name: Run sync script
+    - name: 🔍 Run sync script
       run: python final_complete_geosite_files.py
         
-    - name: Commit results
+    - name: 📊 Check results
+      run: |
+        echo "=== 同步结果 ==="
+        ls -la *.txt 2>/dev/null || echo "未找到txt文件"
+        
+        if [ -f "complete_geosite_files_8705.txt" ]; then
+          echo "✅ 总文件数: $(wc -l < complete_geosite_files_8705.txt)"
+        fi
+        
+    - name: 📤 Commit and push
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        
+        # 设置远程URL使用token
+        git remote set-url origin https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/${{ github.repository }}.git
+        
+        # 添加文件
         git add *.txt
-        git diff --staged --quiet || git commit -m "Auto sync: $(date)"
-        git push
+        
+        # 检查变更并提交
+        if git diff --staged --quiet; then
+          echo "没有文件变更"
+        else
+          git commit -m "🤖 Auto sync: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          git push
+        fi
