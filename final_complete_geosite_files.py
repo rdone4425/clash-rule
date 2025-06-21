@@ -32,8 +32,8 @@ def parse_args():
 
     parser.add_argument(
         '--output', '-o',
-        default='complete_geosite_files_8705.txt',
-        help='指定主输出文件名 (默认: complete_geosite_files_8705.txt)'
+        default='geosite_files.txt',
+        help='指定主输出文件名 (默认: geosite_files.txt)'
     )
 
     parser.add_argument(
@@ -311,7 +311,7 @@ class FinalGeositeFilesFetcher:
                 percentage = (count / analysis['total']) * 100
                 self.logger.info(f"   {provider:<12}: {count:>5,} 个文件 ({percentage:5.1f}%)")
     
-    def save_files(self, files: List[str], filename: str = "complete_geosite_files_8705.txt",
+    def save_files(self, files: List[str], filename: str = "geosite_files.txt",
                    output_dir: str = "geosite_files_output", output_format: str = "txt"):
         """保存完整文件列表"""
         try:
