@@ -1,0 +1,36 @@
+name: Simple Daily Geosite Sync
+
+on:
+  # 每天UTC时间00:00运行 (北京时间08:00)
+  schedule:
+    - cron: '0 0 * * *'
+  
+  # 允许手动触发
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: pip install requests
+        
+    - name: Run sync script
+      run: python final_complete_geosite_files.py
+        
+    - name: Commit results
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add *.txt
+        git diff --staged --quiet || git commit -m "Auto sync: $(date)"
+        git push
