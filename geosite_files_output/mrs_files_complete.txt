@@ -701,9 +701,11 @@ google-scholar.mrs
 google-trust-services.mrs
 google-trust-services@cn.mrs
 google.mrs
+google@!cn.mrs
 google@ads.mrs
 google@cn.mrs
 googlefcm.mrs
+googlefcm@!cn.mrs
 goproxy.mrs
 gracg.mrs
 gravatar.mrs

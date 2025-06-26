@@ -1130,9 +1130,11 @@ classical/google-scholar.yaml
 classical/google-trust-services.yaml
 classical/google-trust-services@cn.yaml
 classical/google.yaml
+classical/google@!cn.yaml
 classical/google@ads.yaml
 classical/google@cn.yaml
 classical/googlefcm.yaml
+classical/googlefcm@!cn.yaml
 classical/goproxy.yaml
 classical/gracg.yaml
 classical/gravatar.yaml
@@ -2442,9 +2444,11 @@ google-scholar.yaml
 google-trust-services.yaml
 google-trust-services@cn.yaml
 google.yaml
+google@!cn.yaml
 google@ads.yaml
 google@cn.yaml
 googlefcm.yaml
+googlefcm@!cn.yaml
 goproxy.yaml
 gracg.yaml
 gravatar.yaml

@@ -2691,12 +2691,16 @@ classical/google-trust-services@cn.list
 classical/google-trust-services@cn.yaml
 classical/google.list
 classical/google.yaml
+classical/google@!cn.list
+classical/google@!cn.yaml
 classical/google@ads.list
 classical/google@ads.yaml
 classical/google@cn.list
 classical/google@cn.yaml
 classical/googlefcm.list
 classical/googlefcm.yaml
+classical/googlefcm@!cn.list
+classical/googlefcm@!cn.yaml
 classical/goproxy.list
 classical/goproxy.yaml
 classical/gracg.list
@@ -5589,6 +5593,9 @@ google-trust-services@cn.yaml
 google.list
 google.mrs
 google.yaml
+google@!cn.list
+google@!cn.mrs
+google@!cn.yaml
 google@ads.list
 google@ads.mrs
 google@ads.yaml
@@ -5598,6 +5605,9 @@ google@cn.yaml
 googlefcm.list
 googlefcm.mrs
 googlefcm.yaml
+googlefcm@!cn.list
+googlefcm@!cn.mrs
+googlefcm@!cn.yaml
 goproxy.list
 goproxy.mrs
 goproxy.yaml

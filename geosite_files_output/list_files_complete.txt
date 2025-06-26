@@ -1130,9 +1130,11 @@ classical/google-scholar.list
 classical/google-trust-services.list
 classical/google-trust-services@cn.list
 classical/google.list
+classical/google@!cn.list
 classical/google@ads.list
 classical/google@cn.list
 classical/googlefcm.list
+classical/googlefcm@!cn.list
 classical/goproxy.list
 classical/gracg.list
 classical/gravatar.list
@@ -2442,9 +2444,11 @@ google-scholar.list
 google-trust-services.list
 google-trust-services@cn.list
 google.list
+google@!cn.list
 google@ads.list
 google@cn.list
 googlefcm.list
+googlefcm@!cn.list
 goproxy.list
 gracg.list
 gravatar.list
