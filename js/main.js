@@ -573,15 +573,35 @@ class ClashConfigApp {
                         </div>
                         <div class="modal-body">
                             <div class="url-result-success">
+                                <div class="important-notice">
+                                    <h4>⚠️ 重要提示</h4>
+                                    <p><strong>此配置仅为框架模板，需要您添加实际的代理节点才能正常使用。</strong></p>
+                                    <ul>
+                                        <li>请在 <code>proxies</code> 部分添加您的代理节点信息</li>
+                                        <li>确保代理组中包含有效的节点名称</li>
+                                        <li>本工具不提供代理节点，仅生成配置结构</li>
+                                    </ul>
+                                </div>
+
                                 <div class="url-section">
-                                    <h4>📋 订阅链接</h4>
+                                    <h4>📋 订阅链接（推荐方式）</h4>
                                     <div class="url-input-group">
                                         <input type="text" class="form-control url-input"
                                                value="${result.subscriptionUrl}" readonly>
                                         <button class="btn btn-sm btn-outline copy-btn"
                                                 data-copy="${result.subscriptionUrl}">复制</button>
                                     </div>
-                                    <small class="form-help">复制此链接到Clash客户端的订阅地址</small>
+                                    <small class="form-help">✅ 此Data URL可以被Clash客户端直接访问，复制后粘贴到订阅地址即可</small>
+                                </div>
+
+                                <div class="yaml-content-section">
+                                    <h4>📝 配置内容（备用方式）</h4>
+                                    <textarea class="form-control yaml-content" readonly rows="8">${result.yamlContent}</textarea>
+                                    <div class="yaml-actions">
+                                        <button class="btn btn-sm btn-outline copy-btn"
+                                                data-copy="${result.yamlContent}">复制配置内容</button>
+                                    </div>
+                                    <small class="form-help">💡 如果订阅链接不工作，可以复制此内容手动粘贴到Clash配置文件中</small>
                                 </div>
 
                                 <div class="client-urls-section">
