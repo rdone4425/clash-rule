@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clash 配置管理器</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/forms.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Clash 配置管理器</h1>
+            <div class="header-actions">
+                <button id="importBtn" class="btn btn-secondary">导入配置</button>
+                <button id="exportBtn" class="btn btn-primary">导出配置</button>
+                <button id="previewBtn" class="btn btn-outline">预览配置</button>
+            </div>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="general">通用设置</button>
+            <button class="nav-tab" data-tab="dns">DNS配置</button>
+            <button class="nav-tab" data-tab="providers">服务提供商</button>
+            <button class="nav-tab" data-tab="groups">代理组</button>
+            <button class="nav-tab" data-tab="rules">规则配置</button>
+        </nav>
+
+        <main class="main-content">
+            <!-- 通用设置 -->
+            <section id="general" class="tab-content active">
+                <div class="card">
+                    <h2>基础配置</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="mode">运行模式</label>
+                            <select id="mode" class="form-control">
+                                <option value="rule">规则模式</option>
+                                <option value="global">全局模式</option>
+                                <option value="direct">直连模式</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="logLevel">日志级别</label>
+                            <select id="logLevel" class="form-control">
+                                <option value="info">信息</option>
+                                <option value="warning">警告</option>
+                                <option value="error">错误</option>
+                                <option value="debug">调试</option>
+                                <option value="silent">静默</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="port">HTTP端口</label>
+                            <input type="number" id="port" class="form-control" value="7890" min="1" max="65535">
+                        </div>
+                        <div class="form-group">
+                            <label for="socksPort">SOCKS端口</label>
+                            <input type="number" id="socksPort" class="form-control" value="7891" min="1" max="65535">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DNS配置 -->
+            <section id="dns" class="tab-content">
+                <div class="card">
+                    <h2>DNS设置</h2>
+                    <div class="form-group">
+                        <label for="defaultNameserver">默认DNS服务器</label>
+                        <textarea id="defaultNameserver" class="form-control" rows="3" placeholder="每行一个DNS服务器地址">119.29.29.29
+223.5.5.5</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="nameserver">主DNS服务器</label>
+                        <textarea id="nameserver" class="form-control" rows="3" placeholder="每行一个DNS服务器地址">https://dns.alidns.com/dns-query
+https://doh.pub/dns-query</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="fakeIpFilter">Fake-IP过滤器</label>
+                        <textarea id="fakeIpFilter" class="form-control" rows="3" placeholder="每行一个过滤规则">"*"
+"+.lan"
+"+.local"</textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 服务提供商 -->
+            <section id="providers" class="tab-content">
+                <div class="card">
+                    <h2>代理服务提供商</h2>
+                    <div id="providersList" class="providers-list">
+                        <!-- 动态生成的提供商列表 -->
+                    </div>
+                    <button id="addProviderBtn" class="btn btn-primary">添加提供商</button>
+                </div>
+            </section>
+
+            <!-- 代理组 -->
+            <section id="groups" class="tab-content">
+                <div class="card">
+                    <h2>代理组配置</h2>
+                    <div class="groups-container">
+                        <div class="groups-nav">
+                            <button class="group-nav-btn active" data-group-type="application">应用代理组</button>
+                            <button class="group-nav-btn" data-group-type="region">地区代理组</button>
+                        </div>
+                        <div id="groupsList" class="groups-list">
+                            <!-- 动态生成的代理组列表 -->
+                        </div>
+                    </div>
+                    <button id="addGroupBtn" class="btn btn-primary">添加代理组</button>
+                </div>
+            </section>
+
+            <!-- 规则配置 -->
+            <section id="rules" class="tab-content">
+                <div class="card">
+                    <h2>分流规则</h2>
+                    <div class="rules-container">
+                        <div class="rules-header">
+                            <input type="text" id="ruleSearch" class="form-control" placeholder="搜索当前规则...">
+                            <button id="addRuleBtn" class="btn btn-primary">手动添加</button>
+                            <button id="toggleRuleBrowserBtn" class="btn btn-outline">规则库</button>
+                            <button id="toggleBatchModeBtn" class="btn btn-outline">批量操作</button>
+                        </div>
+
+                        <!-- 批量操作面板 -->
+                        <div id="batchOperationPanel" class="batch-operation-panel" style="display: none;">
+                            <div class="batch-header">
+                                <span class="batch-title">批量操作模式</span>
+                                <span id="selectedCount" class="selected-count">已选择 0 条规则</span>
+                            </div>
+                            <div class="batch-actions">
+                                <button id="selectAllRulesBtn" class="btn btn-sm btn-outline">全选</button>
+                                <button id="clearSelectionBtn" class="btn btn-sm btn-outline">清除选择</button>
+                                <button id="batchAssignGroupBtn" class="btn btn-sm btn-primary" disabled>批量关联代理组</button>
+                                <button id="batchDeleteRulesBtn" class="btn btn-sm btn-danger" disabled>批量删除</button>
+                            </div>
+                        </div>
+
+                        <!-- 规则浏览器面板 -->
+                        <div id="ruleBrowserPanel" class="rule-browser-panel" style="display: none;">
+                            <div class="rule-browser-header">
+                                <h4>📚 规则库浏览器</h4>
+                                <input type="text" id="ruleBrowserSearch" class="form-control" placeholder="搜索规则库...">
+                            </div>
+                            <div id="ruleBrowserContent" class="rule-browser-content">
+                                <div class="loading-message">正在加载规则库...</div>
+                            </div>
+                        </div>
+
+                        <div id="rulesList" class="rules-list">
+                            <!-- 动态生成的规则列表 -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 配置操作区域 -->
+            <section class="config-actions-section">
+                <div class="card">
+                    <h3>配置操作</h3>
+                    <div class="config-actions">
+                        <button id="validateConfigBtn" class="btn btn-success">🔍 验证配置</button>
+                        <button id="previewConfigBtn" class="btn btn-primary">👁️ 预览配置</button>
+                        <button id="exportConfigBtn" class="btn btn-outline">📤 导出配置</button>
+                        <button id="importConfigBtn" class="btn btn-outline">📥 导入配置</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 预览模态框 -->
+        <div id="previewModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>配置预览</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <pre id="previewContent" class="preview-content"></pre>
+                </div>
+                <div class="modal-footer">
+                    <button id="copyConfigBtn" class="btn btn-primary">复制配置</button>
+                    <button id="downloadConfigBtn" class="btn btn-secondary">下载配置</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 添加/编辑代理组模态框 -->
+        <div id="groupModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="groupModalTitle">添加代理组</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="groupForm">
+                        <div class="form-group">
+                            <label for="groupName">组名</label>
+                            <input type="text" id="groupName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="groupType">策略类型</label>
+                            <select id="groupType" class="form-control" required>
+                                <option value="select">手动选择 - 用户手动在包含的代理组中选择</option>
+                                <option value="url-test">自动选择 - 自动选择延迟最低的节点或代理组</option>
+                                <option value="fallback">故障转移 - 按顺序尝试，故障时自动切换</option>
+                                <option value="load-balance">负载均衡 - 在多个节点或代理组间分配流量</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="groupIcon">图标URL</label>
+                            <input type="url" id="groupIcon" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>包含的代理组</label>
+                            <div class="form-help">
+                                选择此应用代理组应该包含的地区代理组和其他选项。默认已选中所有地区代理组，您可以根据需要调整。
+                            </div>
+                            <div id="groupProxiesCheckboxes" class="checkbox-group">
+                                <!-- 动态生成的复选框 -->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="groupFilter">节点过滤器</label>
+                            <input type="text" id="groupFilter" class="form-control" placeholder="正则表达式，例如：港|🇭🇰|HK|(?i)Hong">
+                        </div>
+                        <div class="form-group">
+                            <label for="groupInterval">测试间隔(秒)</label>
+                            <input type="number" id="groupInterval" class="form-control" value="300" min="60">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="groupHidden"> 隐藏组
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="groupLazy"> 延迟测试
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="saveGroupBtn" class="btn btn-primary">保存</button>
+                    <button type="button" class="modal-close btn btn-secondary">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
