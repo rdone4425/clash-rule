@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>部署状态检查</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8fafc;
+            color: #1a202c;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 4px solid #e2e8f0;
+        }
+        .status-success {
+            background: #f0fff4;
+            border-left-color: #38a169;
+            color: #2f855a;
+        }
+        .status-error {
+            background: #fff5f5;
+            border-left-color: #e53e3e;
+            color: #c53030;
+        }
+        .status-warning {
+            background: #fffbeb;
+            border-left-color: #d69e2e;
+            color: #b7791f;
+        }
+        .status-loading {
+            background: #ebf8ff;
+            border-left-color: #3182ce;
+            color: #2c5282;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #5a67d8;
+        }
+        .timestamp {
+            font-size: 12px;
+            color: #718096;
+        }
+        .feature-test {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Clash配置管理器 - 部署状态</h1>
+        <p>检查GitHub Pages部署状态和功能可用性</p>
+        <div class="timestamp">检查时间: <span id="checkTime"></span></div>
+    </div>
+
+    <div class="status-card">
+        <h2>📊 部署状态检查</h2>
+        <div id="deploymentStatus">
+            <div class="status-item status-loading">
+                <span>🔄 正在检查部署状态...</span>
+            </div>
+        </div>
+        <button class="btn" onclick="checkDeploymentStatus()">重新检查</button>
+    </div>
+
+    <div class="status-card">
+        <h2>📁 文件完整性检查</h2>
+        <div id="fileStatus">
+            <div class="status-item status-loading">
+                <span>🔄 正在检查文件...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-card">
+        <h2>⚙️ 功能测试</h2>
+        <div id="featureStatus">
+            <div class="status-item status-loading">
+                <span>🔄 正在测试功能...</span>
+            </div>
+        </div>
+        <div class="feature-test">
+            <h3>URL生成器测试</h3>
+            <button class="btn" onclick="testUrlGenerator()">测试URL生成功能</button>
+            <div id="urlGeneratorTest"></div>
+        </div>
+    </div>
+
+    <div class="status-card">
+        <h2>🔗 快速链接</h2>
+        <a href="index.html" class="btn">返回主页</a>
+        <a href="https://github.com/rdone4425/clash-rule/actions" class="btn" target="_blank">查看GitHub Actions</a>
+        <a href="version-check.html" class="btn">版本检查</a>
+    </div>
+
+    <script>
+        // 设置检查时间
+        document.getElementById('checkTime').textContent = new Date().toLocaleString();
+
+        // 需要检查的文件列表
+        const criticalFiles = [
+            { path: 'index.html', name: '主页面' },
+            { path: 'js/main.js', name: '主应用' },
+            { path: 'js/modules/url-generator.js', name: 'URL生成器' },
+            { path: 'js/modules/rule-manager.js', name: '规则管理器' },
+            { path: 'styles/components.css', name: '样式文件' }
+        ];
+
+        // 检查部署状态
+        async function checkDeploymentStatus() {
+            const statusDiv = document.getElementById('deploymentStatus');
+            statusDiv.innerHTML = '<div class="status-item status-loading"><span>🔄 检查中...</span></div>';
+
+            try {
+                // 检查主页面是否可访问
+                const response = await fetch('index.html');
+                if (response.ok) {
+                    const html = await response.text();
+                    
+                    // 检查是否包含URL生成按钮
+                    if (html.includes('生成订阅')) {
+                        statusDiv.innerHTML = `
+                            <div class="status-item status-success">
+                                <span>✅ 部署成功 - 包含最新功能</span>
+                                <span class="timestamp">${new Date().toLocaleTimeString()}</span>
+                            </div>
+                        `;
+                    } else {
+                        statusDiv.innerHTML = `
+                            <div class="status-item status-warning">
+                                <span>⚠️ 部署成功但版本可能较旧</span>
+                                <span class="timestamp">${new Date().toLocaleTimeString()}</span>
+                            </div>
+                        `;
+                    }
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status-item status-error">
+                        <span>❌ 部署检查失败: ${error.message}</span>
+                        <span class="timestamp">${new Date().toLocaleTimeString()}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // 检查文件状态
+        async function checkFiles() {
+            const statusDiv = document.getElementById('fileStatus');
+            statusDiv.innerHTML = '<div class="status-item status-loading"><span>🔄 检查文件中...</span></div>';
+
+            const results = [];
+            
+            for (const file of criticalFiles) {
+                try {
+                    const response = await fetch(file.path);
+                    if (response.ok) {
+                        results.push(`
+                            <div class="status-item status-success">
+                                <span>✅ ${file.name}</span>
+                                <span>${file.path}</span>
+                            </div>
+                        `);
+                    } else {
+                        results.push(`
+                            <div class="status-item status-error">
+                                <span>❌ ${file.name} (${response.status})</span>
+                                <span>${file.path}</span>
+                            </div>
+                        `);
+                    }
+                } catch (error) {
+                    results.push(`
+                        <div class="status-item status-error">
+                            <span>❌ ${file.name} (网络错误)</span>
+                            <span>${file.path}</span>
+                        </div>
+                    `);
+                }
+            }
+            
+            statusDiv.innerHTML = results.join('');
+        }
+
+        // 检查功能状态
+        async function checkFeatures() {
+            const statusDiv = document.getElementById('featureStatus');
+            statusDiv.innerHTML = '<div class="status-item status-loading"><span>🔄 测试功能中...</span></div>';
+
+            const results = [];
+
+            // 测试URL生成器模块
+            try {
+                const module = await import('./js/modules/url-generator.js');
+                if (module.URLGenerator) {
+                    results.push(`
+                        <div class="status-item status-success">
+                            <span>✅ URL生成器模块</span>
+                            <span>可正常导入</span>
+                        </div>
+                    `);
+                } else {
+                    results.push(`
+                        <div class="status-item status-error">
+                            <span>❌ URL生成器模块</span>
+                            <span>导出不正确</span>
+                        </div>
+                    `);
+                }
+            } catch (error) {
+                results.push(`
+                    <div class="status-item status-error">
+                        <span>❌ URL生成器模块</span>
+                        <span>${error.message}</span>
+                    </div>
+                `);
+            }
+
+            // 测试主应用模块
+            try {
+                const module = await import('./js/main.js');
+                results.push(`
+                    <div class="status-item status-success">
+                        <span>✅ 主应用模块</span>
+                        <span>可正常导入</span>
+                    </div>
+                `);
+            } catch (error) {
+                results.push(`
+                    <div class="status-item status-error">
+                        <span>❌ 主应用模块</span>
+                        <span>${error.message}</span>
+                    </div>
+                `);
+            }
+
+            statusDiv.innerHTML = results.join('');
+        }
+
+        // 测试URL生成器功能
+        async function testUrlGenerator() {
+            const testDiv = document.getElementById('urlGeneratorTest');
+            testDiv.innerHTML = '<div class="status-item status-loading"><span>🔄 测试中...</span></div>';
+
+            try {
+                const module = await import('./js/modules/url-generator.js');
+                const generator = new module.URLGenerator();
+                
+                // 测试配置
+                const testConfig = {
+                    port: 7890,
+                    'socks-port': 7891,
+                    mode: 'rule',
+                    'log-level': 'info',
+                    'proxy-groups': [
+                        {
+                            name: 'Proxy',
+                            type: 'select',
+                            proxies: ['DIRECT']
+                        }
+                    ],
+                    rules: ['MATCH,Proxy']
+                };
+
+                const result = generator.generateConfigURL(testConfig);
+                
+                if (result.success && result.subscriptionUrl) {
+                    testDiv.innerHTML = `
+                        <div class="status-item status-success">
+                            <span>✅ URL生成功能正常</span>
+                            <span>生成了 ${Object.keys(result.clientLinks).length} 个客户端链接</span>
+                        </div>
+                    `;
+                } else {
+                    testDiv.innerHTML = `
+                        <div class="status-item status-error">
+                            <span>❌ URL生成功能异常</span>
+                            <span>未能生成有效链接</span>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                testDiv.innerHTML = `
+                    <div class="status-item status-error">
+                        <span>❌ URL生成器测试失败</span>
+                        <span>${error.message}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // 页面加载时自动检查
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                checkDeploymentStatus();
+                checkFiles();
+                checkFeatures();
+            }, 1000);
+        });
+
+        // 每30秒自动重新检查部署状态
+        setInterval(checkDeploymentStatus, 30000);
+    </script>
+</body>
+</html>
