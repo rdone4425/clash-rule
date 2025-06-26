@@ -6,6 +6,7 @@ import { RuleManager } from './modules/rule-manager.js';
 import { ProviderManager } from './modules/provider-manager.js';
 import { ValidationManager } from './modules/validation-manager.js';
 import { ConfigValidator } from './modules/config-validator.js';
+import { URLGenerator } from './modules/url-generator.js';
 
 class ClashConfigApp {
     constructor() {
@@ -16,6 +17,7 @@ class ClashConfigApp {
         this.providerManager = new ProviderManager();
         this.validationManager = new ValidationManager();
         this.configValidator = new ConfigValidator();
+        this.urlGenerator = new URLGenerator();
         
         this.currentConfig = this.getDefaultConfig();
         this.init();
@@ -135,6 +137,14 @@ class ClashConfigApp {
         if (previewBtn) {
             previewBtn.addEventListener('click', () => {
                 this.previewConfig();
+            });
+        }
+
+        // 生成订阅URL
+        const generateUrlBtn = document.getElementById('generateUrlBtn');
+        if (generateUrlBtn) {
+            generateUrlBtn.addEventListener('click', () => {
+                this.showGenerateUrlModal();
             });
         }
 
@@ -386,7 +396,7 @@ class ClashConfigApp {
             validateBtn.disabled = true;
 
             // 生成当前配置
-            const config = this.configManager.generateConfig(this.currentConfig);
+            const config = this.currentConfig;
 
             // 执行验证
             const validationResult = this.configValidator.validateConfig(config);
@@ -544,6 +554,112 @@ class ClashConfigApp {
 
         // 保存配置
         this.configManager.saveConfig(this.currentConfig);
+    }
+
+    /**
+     * 显示生成URL模态框（简化版）
+     */
+    showGenerateUrlModal() {
+        try {
+            // 直接生成配置URL
+            const result = this.urlGenerator.generateConfigURL(this.currentConfig);
+
+            const modalHtml = `
+                <div id="generateUrlModal" class="modal active">
+                    <div class="modal-content" style="max-width: 600px;">
+                        <div class="modal-header">
+                            <h3>🔗 生成订阅链接</h3>
+                            <button class="modal-close">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="url-result-success">
+                                <div class="url-section">
+                                    <h4>📋 订阅链接</h4>
+                                    <div class="url-input-group">
+                                        <input type="text" class="form-control url-input"
+                                               value="${result.subscriptionUrl}" readonly>
+                                        <button class="btn btn-sm btn-outline copy-btn"
+                                                data-copy="${result.subscriptionUrl}">复制</button>
+                                    </div>
+                                    <small class="form-help">复制此链接到Clash客户端的订阅地址</small>
+                                </div>
+
+                                <div class="client-urls-section">
+                                    <h4>📱 客户端快速导入</h4>
+                                    <div class="client-urls-grid">
+                                        ${Object.entries(result.clientLinks).map(([name, url]) => `
+                                            <div class="client-url-item">
+                                                <span class="client-name">${name}</span>
+                                                <button class="btn btn-sm btn-outline copy-btn"
+                                                        data-copy="${url}">复制链接</button>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    <small class="form-help">点击复制后在对应客户端中粘贴即可导入</small>
+                                </div>
+
+                                <div class="download-section">
+                                    <h4>💾 下载配置文件</h4>
+                                    <a href="${result.downloadLink.url}"
+                                       download="${result.downloadLink.filename}"
+                                       class="btn btn-primary">下载 YAML 文件</a>
+                                    <small class="form-help">下载后可手动导入到客户端</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="modal-close btn btn-secondary">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 移除现有模态框
+            const existingModal = document.getElementById('generateUrlModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // 添加新模态框
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // 绑定复制按钮事件
+            this.bindCopyButtons();
+
+            // 绑定关闭事件
+            document.querySelectorAll('#generateUrlModal .modal-close').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('generateUrlModal').remove();
+                });
+            });
+
+        } catch (error) {
+            console.error('生成URL失败:', error);
+            this.uiManager.showNotification('生成URL失败: ' + error.message, 'error');
+        }
+    }
+
+    /**
+     * 绑定复制按钮事件
+     */
+    bindCopyButtons() {
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const textToCopy = e.target.dataset.copy;
+                const originalText = e.target.textContent;
+                try {
+                    await navigator.clipboard.writeText(textToCopy);
+                    e.target.textContent = '已复制';
+                    setTimeout(() => {
+                        e.target.textContent = originalText;
+                    }, 2000);
+                    this.uiManager.showNotification('已复制到剪贴板', 'success');
+                } catch (error) {
+                    console.error('复制失败:', error);
+                    this.uiManager.showNotification('复制失败', 'error');
+                }
+            });
+        });
     }
 }
 
