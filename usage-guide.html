@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>使用指南 - Clash配置管理器</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8fafc;
+            color: #1a202c;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .guide-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .method {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .method-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .steps {
+            list-style: none;
+            padding: 0;
+        }
+        .steps li {
+            background: white;
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid #38a169;
+            position: relative;
+            padding-left: 40px;
+        }
+        .steps li::before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            background: #38a169;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .steps {
+            counter-reset: step-counter;
+        }
+        .warning {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .warning-title {
+            color: #c53030;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .success {
+            background: #f0fff4;
+            border: 1px solid #c6f6d5;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-title {
+            color: #38a169;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #5a67d8;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📖 Clash配置使用指南</h1>
+        <p>如何正确使用生成的配置文件</p>
+    </div>
+
+    <div class="guide-section">
+        <h2>🎯 推荐方法：使用Data URL订阅</h2>
+        
+        <div class="success">
+            <div class="success-title">✅ 最佳方案</div>
+            <p>使用Data URL可以直接被Clash客户端访问，无需额外的文件托管服务。</p>
+        </div>
+
+        <div class="method">
+            <div class="method-title">📱 适用客户端</div>
+            <ul>
+                <li><strong>Clash for Windows</strong> - 完全支持</li>
+                <li><strong>ClashX (macOS)</strong> - 完全支持</li>
+                <li><strong>Clash for Android</strong> - 完全支持</li>
+                <li><strong>Mihomo</strong> - 支持Data URL</li>
+            </ul>
+        </div>
+
+        <ol class="steps">
+            <li>在配置管理器中点击"🔗 生成订阅"按钮</li>
+            <li>复制"订阅链接"中的Data URL（以data:开头的长链接）</li>
+            <li>打开Clash客户端，找到"配置"或"Profiles"选项</li>
+            <li>选择"从URL导入"或"Add Profile from URL"</li>
+            <li>粘贴复制的Data URL</li>
+            <li>点击"下载"或"Download"完成导入</li>
+        </ol>
+    </div>
+
+    <div class="guide-section">
+        <h2>💾 备用方法：手动导入配置</h2>
+        
+        <div class="warning">
+            <div class="warning-title">⚠️ 当订阅链接不工作时使用</div>
+            <p>如果您的客户端不支持Data URL，可以使用此方法。</p>
+        </div>
+
+        <ol class="steps">
+            <li>在URL生成器中复制"配置内容"区域的YAML文本</li>
+            <li>打开Clash客户端的配置文件编辑器</li>
+            <li>创建新的配置文件或编辑现有配置</li>
+            <li>粘贴复制的YAML内容</li>
+            <li>保存配置文件</li>
+            <li>在客户端中选择该配置文件</li>
+        </ol>
+    </div>
+
+    <div class="guide-section">
+        <h2>📁 文件下载方法</h2>
+        
+        <ol class="steps">
+            <li>点击"下载 YAML 文件"按钮</li>
+            <li>保存文件到本地（如：clash-config.yaml）</li>
+            <li>打开Clash客户端</li>
+            <li>选择"从文件导入"或"Import from file"</li>
+            <li>选择下载的YAML文件</li>
+            <li>完成导入</li>
+        </ol>
+    </div>
+
+    <div class="guide-section">
+        <h2>🔧 常见问题解决</h2>
+        
+        <h3>❌ "failed to fetch remote profile" 错误</h3>
+        <div class="warning">
+            <div class="warning-title">原因</div>
+            <p>客户端无法访问Blob URL（以blob:开头的链接）</p>
+        </div>
+        <div class="success">
+            <div class="success-title">解决方案</div>
+            <p>使用Data URL订阅链接，或者下载文件手动导入</p>
+        </div>
+
+        <h3>❌ "invalid configuration" 错误</h3>
+        <div class="warning">
+            <div class="warning-title">可能原因</div>
+            <ul>
+                <li>配置中缺少必要的代理节点</li>
+                <li>规则目标代理组不存在</li>
+                <li>YAML格式错误</li>
+            </ul>
+        </div>
+        <div class="success">
+            <div class="success-title">解决方案</div>
+            <ul>
+                <li>确保添加了代理节点到代理组中</li>
+                <li>检查规则目标是否与代理组名称匹配</li>
+                <li>使用配置验证功能检查错误</li>
+            </ul>
+        </div>
+
+        <h3>❌ 无法连接网络</h3>
+        <div class="warning">
+            <div class="warning-title">可能原因</div>
+            <p>配置中没有有效的代理节点</p>
+        </div>
+        <div class="success">
+            <div class="success-title">解决方案</div>
+            <p>本工具只生成配置框架，需要您添加实际的代理节点信息</p>
+        </div>
+    </div>
+
+    <div class="guide-section">
+        <h2>💡 使用技巧</h2>
+        
+        <h3>🔄 配置更新</h3>
+        <p>当您修改配置后：</p>
+        <ol class="steps">
+            <li>重新生成订阅链接</li>
+            <li>在客户端中更新配置文件</li>
+            <li>或者重新导入新的配置</li>
+        </ol>
+
+        <h3>🎯 最佳实践</h3>
+        <ul>
+            <li><strong>先验证配置</strong>：使用"验证配置"功能检查错误</li>
+            <li><strong>测试连接</strong>：导入后测试代理是否正常工作</li>
+            <li><strong>备份配置</strong>：保存工作正常的配置文件</li>
+            <li><strong>定期更新</strong>：规则库会定期更新，建议定期重新生成</li>
+        </ul>
+    </div>
+
+    <div class="guide-section">
+        <h2>🔗 相关链接</h2>
+        <a href="index.html" class="btn">返回主页</a>
+        <a href="deploy-status.html" class="btn">部署状态</a>
+        <a href="https://github.com/rdone4425/clash-rule" class="btn" target="_blank">GitHub仓库</a>
+    </div>
+</body>
+</html>
