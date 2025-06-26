@@ -189,6 +189,64 @@
     </div>
 
     <div class="guide-section">
+        <h2>⚙️ 配置代理节点</h2>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ 重要说明</div>
+            <p>本工具生成的配置文件仅为框架模板，<strong>必须添加实际的代理节点才能正常使用</strong>。</p>
+        </div>
+
+        <h3>📝 添加代理节点的方法</h3>
+
+        <div class="method">
+            <div class="method-title">方法1: 在生成的配置中添加</div>
+            <p>在配置文件的 <code>proxies:</code> 部分添加您的节点信息：</p>
+            <div class="code">proxies:
+  - name: "香港节点1"
+    type: ss
+    server: hk1.example.com
+    port: 443
+    cipher: aes-256-gcm
+    password: "your-password"
+
+  - name: "美国节点1"
+    type: vmess
+    server: us1.example.com
+    port: 443
+    uuid: your-uuid
+    alterId: 0
+    cipher: auto</div>
+        </div>
+
+        <div class="method">
+            <div class="method-title">方法2: 使用订阅链接</div>
+            <p>如果您有现有的订阅链接，可以：</p>
+            <ol class="steps">
+                <li>在Clash客户端中先导入您的节点订阅</li>
+                <li>然后导入本工具生成的规则配置</li>
+                <li>在客户端中合并两个配置</li>
+            </ol>
+        </div>
+
+        <div class="method">
+            <div class="method-title">方法3: 手动编辑代理组</div>
+            <p>确保每个代理组都包含有效的节点名称：</p>
+            <div class="code">proxy-groups:
+  - name: HongKong
+    type: url-test
+    proxies:
+      - "香港节点1"
+      - "香港节点2"
+
+  - name: America
+    type: url-test
+    proxies:
+      - "美国节点1"
+      - "美国节点2"</div>
+        </div>
+    </div>
+
+    <div class="guide-section">
         <h2>🔧 常见问题解决</h2>
         
         <h3>❌ "failed to fetch remote profile" 错误</h3>
@@ -219,14 +277,36 @@
             </ul>
         </div>
 
-        <h3>❌ 无法连接网络</h3>
+        <h3>❌ "代理组为空" 或 "proxy group is empty"</h3>
         <div class="warning">
-            <div class="warning-title">可能原因</div>
-            <p>配置中没有有效的代理节点</p>
+            <div class="warning-title">原因</div>
+            <p>代理组中没有包含任何代理节点</p>
         </div>
         <div class="success">
             <div class="success-title">解决方案</div>
-            <p>本工具只生成配置框架，需要您添加实际的代理节点信息</p>
+            <ul>
+                <li>在 <code>proxies:</code> 部分添加实际的代理节点</li>
+                <li>确保代理组的 <code>proxies:</code> 列表包含有效的节点名称</li>
+                <li>节点名称必须与 <code>proxies:</code> 中定义的名称完全一致</li>
+            </ul>
+        </div>
+
+        <h3>❌ 无法连接网络</h3>
+        <div class="warning">
+            <div class="warning-title">可能原因</div>
+            <ul>
+                <li>配置中没有有效的代理节点</li>
+                <li>代理节点信息不正确</li>
+                <li>代理服务器无法访问</li>
+            </ul>
+        </div>
+        <div class="success">
+            <div class="success-title">解决方案</div>
+            <ul>
+                <li>确保添加了有效的代理节点信息</li>
+                <li>检查节点的服务器地址、端口、密码等信息</li>
+                <li>测试代理节点是否可以正常连接</li>
+            </ul>
         </div>
     </div>
 
