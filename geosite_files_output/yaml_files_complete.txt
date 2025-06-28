@@ -1730,6 +1730,7 @@ classical/riot@cn.yaml
 classical/roborock.yaml
 classical/rockstar.yaml
 classical/roku.yaml
+classical/rsshub-3rd.yaml
 classical/rsshub.yaml
 classical/rthk.yaml
 classical/ruanmei.yaml
@@ -3044,6 +3045,7 @@ riot@cn.yaml
 roborock.yaml
 rockstar.yaml
 roku.yaml
+rsshub-3rd.yaml
 rsshub.yaml
 rthk.yaml
 ruanmei.yaml

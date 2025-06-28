@@ -1301,6 +1301,7 @@ riot@cn.mrs
 roborock.mrs
 rockstar.mrs
 roku.mrs
+rsshub-3rd.mrs
 rsshub.mrs
 rthk.mrs
 ruanmei.mrs

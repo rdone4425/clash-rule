@@ -3891,6 +3891,8 @@ classical/rockstar.list
 classical/rockstar.yaml
 classical/roku.list
 classical/roku.yaml
+classical/rsshub-3rd.list
+classical/rsshub-3rd.yaml
 classical/rsshub.list
 classical/rsshub.yaml
 classical/rthk.list
@@ -7393,6 +7395,9 @@ rockstar.yaml
 roku.list
 roku.mrs
 roku.yaml
+rsshub-3rd.list
+rsshub-3rd.mrs
+rsshub-3rd.yaml
 rsshub.list
 rsshub.mrs
 rsshub.yaml
