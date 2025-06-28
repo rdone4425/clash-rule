@@ -1730,6 +1730,7 @@ classical/riot@cn.list
 classical/roborock.list
 classical/rockstar.list
 classical/roku.list
+classical/rsshub-3rd.list
 classical/rsshub.list
 classical/rthk.list
 classical/ruanmei.list
@@ -3044,6 +3045,7 @@ riot@cn.list
 roborock.list
 rockstar.list
 roku.list
+rsshub-3rd.list
 rsshub.list
 rthk.list
 ruanmei.list
